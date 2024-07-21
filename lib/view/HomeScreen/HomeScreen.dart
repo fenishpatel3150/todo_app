@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:todo_app/controller/TodoController.dart';
 
@@ -12,23 +11,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TodoController todoController = Get.put(TodoController());
+   TodoController todoController = Get.put(TodoController());
   TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Color(0xff474747),
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff474747),
         leading: IconButton(
           onPressed: () {},
-          icon: Icon(
+          icon: const Icon(
             CupertinoIcons.rectangle_grid_2x2,
             color: Colors.white,
           ),
         ),
-        title: Center(
+        title: const Center(
           child: Text(
             'TODO',
             style: TextStyle(color: Colors.white),
@@ -37,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(
+            icon: const Icon(
               CupertinoIcons.line_horizontal_3_decrease,
               color: Colors.white,
             ),
@@ -45,48 +44,57 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: SingleChildScrollView(
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 35),
+            const SizedBox(height: 35),
             Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, top: 25),
+                const Padding(
+                  padding: EdgeInsets.only(left: 25),
                   child: Text(
                     'Today',
                     style: TextStyle(color: Colors.white, fontSize: 30),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 InkWell(
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (context) {
                         return CupertinoAlertDialog(
-                          title:Center(child: Text('ADD DEATILS',style: TextStyle(color: Colors.blue),)) ,
-                          actions: [
-                          CupertinoTextField(
-                              decoration: BoxDecoration(
-                              ),
-                              controller: textEditingController,
+                          title: const Center(
+                            child: Text(
+                              'ADD DETAILS',
+                              style: TextStyle(color: Colors.blue),
                             ),
+                          ),
+                          content: CupertinoTextField(
+                            controller: textEditingController,
+                          ),
+                          actions: [
                             CupertinoButton(
-                              child: Text("Save",style: TextStyle(color: Colors.blue),),
+                              child: const Text(
+                                "Save",
+                                style: TextStyle(color: Colors.blue),
+                              ),
                               onPressed: () {
-                                todoController.TodoList.add(textEditingController.text);
+                                todoController.TodoList.add(
+                                    textEditingController.text);
+                                Navigator.of(context).pop();
                                 textEditingController.clear();
-                                Get.back();
                               },
                             ),
                             CupertinoButton(
-                              child: Text("Cancel",style: TextStyle(color: Colors.blue),),
+                              child: const Text(
+                                "Cancel",
+                                style: TextStyle(color: Colors.blue),
+                              ),
                               onPressed: () {
                                 textEditingController.clear();
-                               Navigator.pop(context);
+                                Navigator.pop(context);
                               },
                             ),
                           ],
@@ -95,21 +103,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                   child: Padding(
-                    padding:  EdgeInsets.only(right: 25, top: 25),
+                    padding: const EdgeInsets.only(right: 25),
                     child: Container(
                       height: 60,
                       width: 140,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
-                          "Add New",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          "ADD NEW",
+                          style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
                       ),
                     ),
@@ -117,50 +122,96 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 20,),
+            const SizedBox(height: 35),
             Container(
               height: 700,
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(35)),
-                color: Colors.white,
+                color: Colors.black,
               ),
-              child:  Obx(() => Expanded(
-                  child: ListView.builder(
-                    itemCount: todoController.TodoList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: EdgeInsets.only(top: 50,left: 25,right: 25),
+              child: Obx(
+                    () => ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: todoController.TodoList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          top: 50, left: 25, right: 25),
+                      child: InkWell(
+                        onLongPress: () {
+                          textEditingController.text =
+                          todoController.TodoList[index];
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return CupertinoAlertDialog(
+                                title: const Center(
+                                  child: Text(
+                                    'EDIT DETAILS',
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ),
+                                content: CupertinoTextField(
+                                  controller: textEditingController,
+                                ),
+                                actions: [
+                                  CupertinoButton(
+                                    child: const Text(
+                                      "Save",
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                    onPressed: () {
+                                      todoController.updateTodo(
+                                          index, textEditingController.text);
+                                      Navigator.of(context).pop();
+                                      textEditingController.clear();
+                                    },
+                                  ),
+                                  CupertinoButton(
+                                    child: const Text(
+                                      "Cancel",
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                    onPressed: () {
+                                      textEditingController.clear();
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                         child: Container(
                           height: 70,
                           width: 300,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
+                          decoration: const BoxDecoration(
+                            color: Color(0xff474747),
                             borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(10),
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10),
-                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(5),
+                              bottomLeft: Radius.circular(5),
+                              bottomRight: Radius.circular(5),
+                              topLeft: Radius.circular(30),
                             ),
                           ),
                           child: Row(
                             children: [
-                              SizedBox(width: 20),
+                              const SizedBox(width: 20),
                               Text(
                                 todoController.TodoList[index],
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               IconButton(
                                 onPressed: () {
-                                  todoController.TodoList.removeAt(index);
+                                  todoController.todoRemove(index);
                                   textEditingController.clear();
-                                  Get.back();
                                 },
-                                icon: Icon(
+                                icon: const Icon(
                                   CupertinoIcons.delete,
                                   color: Colors.white,
                                 ),
@@ -168,9 +219,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

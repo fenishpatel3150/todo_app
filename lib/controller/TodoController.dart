@@ -1,17 +1,14 @@
 import 'package:get/get.dart';
 
-class TodoController extends GetxController
-{
+class TodoController extends GetxController {
+  RxList<String> TodoList = <String>[].obs;
 
-  RxList TodoList = [].obs;
-
-
-
-
-  void todoRemove(int index)
-  {
-      TodoList.removeAt(index);
+  void updateTodo(int index, String newTitle) {
+    TodoList[index] = newTitle;
+    TodoList.refresh();
   }
 
-
+  void todoRemove(int index) {
+    TodoList.removeAt(index);
+  }
 }
